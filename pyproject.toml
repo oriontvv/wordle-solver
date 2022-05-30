@@ -1,0 +1,10 @@
+[project]
+name = "wordle-solver"
+description = "script for solving wordle puzzle"
+version = "0.1.0"
+license = "LGPL"
+authors = [
+    { name = "Vasiliy Taranov", email = "taranov.vv@gmail.com" }
+]
+dependencies = [
+]
