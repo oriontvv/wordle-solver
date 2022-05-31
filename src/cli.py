@@ -2,7 +2,7 @@ from app import App
 
 
 def main():
-    app = App(lang="ru", length=5, start_word="океан")
+    app = App(lang="ru", start_word="сонет")
     app.run()
 
 

@@ -3,9 +3,9 @@ from solver import Solver
 
 
 class App:
-    def __init__(self, lang: str, length: int, start_word: str):
+    def __init__(self, lang: str, start_word: str):
         self.lang = lang
-        self.length = length
+        self.length = len(start_word)
         words, abc = self._read_words()
         self.solver = Solver(self, words=words, abc=abc, start_word=start_word)
 
