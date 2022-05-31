@@ -10,10 +10,9 @@ if TYPE_CHECKING:
 
 
 class Solver:
-    def __init__(self, app: App, words: set(str), abc: str, start_word: str) -> None:
+    def __init__(self, app: App, words: set[str], abc: str, start_word: str) -> None:
         self.app = app
-        self.words = words
-        self.possible_words = copy.deepcopy(words)
+        self.possible_words = words
         self.abc = abc
         self.start_word = start_word
         self.step = 0
