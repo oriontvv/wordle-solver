@@ -11,5 +11,5 @@ x? character is in the word
 x- character is NOT in the word
 
 characters should be delimeted with space:
-l e? * e r- 
+a l- e- r- t?
 ```
