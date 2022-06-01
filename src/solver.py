@@ -3,36 +3,35 @@ from __future__ import annotations
 import copy
 import re
 from collections import Counter
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from app import App
 
 
 class Solver:
-    def __init__(self, app: App, words: set[str], lenght: int) -> None:
-        self.app = app
+    def __init__(self, words: set[str], lenght: int) -> None:
         self.possible_words: set[str] = []
+        self.lenght = lenght
         self.step = 0
         self.variants = set()
         self.neg_variants = set()
         self.letters = []
-        self.reset(words, lenght)
+        self.reset(words)
 
-    def reset(self, words: set[str], lenght: int):
+    def reset(self, words: set[str]):
         if not words:
             raise Exception("Empty dictionary")
         self.step = 0
         self.variants = set()
         self.neg_variants = set()
-        self.possible_words = words
+        self.original_words = words
+        self.possible_words = copy.deepcopy(words)
         abc = {letter for word in words for letter in word}
-        self.letters = [Letter(self, abc) for _ in range(lenght)]
+        self.letters = [Letter(self, abc) for _ in range(self.lenght)]
 
     def add_guess_result(self, guess: str):
         chars = guess.strip().split()
         if len(chars) != len(self.letters):
-            raise Exception("invalid format")
+            raise Exception(
+                f"Invalid format: {chars}, expected {len(self.letters)} chars"
+            )
 
         for ch, letter in zip(chars, self.letters):
             if ch == "*":
@@ -47,7 +46,7 @@ class Solver:
                 self.neg_variants.add(ch)
             else:
                 if len(ch) != 1:
-                    raise Exception("invalid format, expected 1 char")
+                    raise Exception(f"Invalid format: {ch}, expected 1 char")
                 letter.found = ch
 
     def is_done(self) -> bool:
@@ -69,16 +68,28 @@ class Solver:
         for letter in self.letters:
             letter.filter(abc)
 
-        return self.find_most_frequent_variants()
+        variants = self.find_most_frequent_variants()
+        total_found = len([letter for letter in self.letters if letter.is_done()])
+        if total_found >= 3 and len(self.possible_words) > 2:
+            variants = self.find_optimized_word(variants) + variants
+
+        return variants
 
     def total_variants(self) -> int:
         return len(self.possible_words)
 
-    def find_most_frequent_variants(self, count: int = 30) -> list[str]:
+    def find_most_frequent_variants(
+        self, count: int = 30, additional_weight: set = None
+    ) -> list[str]:
+        additional_weight = additional_weight or set()
+
         def max_freq(word):
             result = 0
             for ch in set(word):
-                result += 3 * freq[ch]
+                if ch in additional_weight:
+                    result += 100 * freq[ch]
+                else:
+                    result += 3 * freq[ch]
             return -result
 
         freq = Counter()
@@ -89,6 +100,20 @@ class Solver:
         words = list(self.possible_words)
         words.sort(key=max_freq)
         return words[:count]
+
+    def find_optimized_word(self, variants) -> list[str]:
+        solver = Solver(self.original_words, self.lenght)
+        unchecked_letters = set()
+        for variant in variants:
+            for variant_letter, letter in zip(variant, self.letters):
+                if letter.is_done():
+                    continue
+                unchecked_letters.add(variant_letter)
+
+        optimized_variants = solver.find_most_frequent_variants(
+            count=1, additional_weight=unchecked_letters
+        )
+        return optimized_variants
 
     def __str__(self) -> str:
         delim = "=" * 20

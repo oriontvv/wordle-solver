@@ -17,7 +17,7 @@ class App:
         self.lang = lang
         self.default_length = length
         words = load_words(lang, length)
-        self.solver = Solver(self, words, length)
+        self.solver = Solver(words, length)
 
     def run(self):
         while not self.solver.is_done():
@@ -27,7 +27,7 @@ class App:
             result = self.read_user_input()
             if result == "reset":
                 words = load_words(self.lang, self.default_length)
-                self.solver.reset(words, self.default_length)
+                self.solver.reset(words)
                 continue
             elif result == "exit":
                 print("Good bye!")
