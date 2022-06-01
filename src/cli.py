@@ -8,7 +8,7 @@ def parse_args():
     parser.add_argument("--lang", help="language", default="ru")
     parser.add_argument("--length", help="length of words", default=5)
     return parser.parse_args()
-    
+
 
 def main():
     args = parse_args()

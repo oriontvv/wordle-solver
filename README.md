@@ -1,5 +1,5 @@
 # wordle-solver
-Solver for wordle puzzle game
+A solver for wordle puzzle game
 
 
 Format:
@@ -11,5 +11,11 @@ x? character is in the word
 x- character is NOT in the word
 
 characters should be delimeted with space:
-a l- e- r- t?
+a l- e * t?
 ```
+
+Running:
+
+`python src/cli.py --lang ru`
+
+`reset` command will reset the state of the solver

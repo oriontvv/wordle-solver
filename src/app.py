@@ -21,9 +21,10 @@ class App:
 
     def run(self):
         while not self.solver.is_done():
-            self.print_guess(self.solver.get_next_guess())
+            guess = self.solver.get_next_guess()
+            self.print_guess(guess)
             result = self.read_result()
-            if result.strip() == 'reset':
+            if result.strip() == "reset":
                 words = load_words(self.lang, self.default_length)
                 self.solver.reset(words, self.default_length)
                 continue
@@ -32,8 +33,11 @@ class App:
             except Exception as e:
                 print(f"Error: {e}")
 
-    def print_guess(self, word: str):
-        print(f"Try '{word}'")
+    def print_guess(self, word: str | None):
+        if word is None:
+            print("I don't know such a word..")
+        else:
+            print(f"Try '{word}'")
 
     def read_result(self) -> str:
         return input("> ").lower()
