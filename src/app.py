@@ -21,17 +21,30 @@ class App:
 
     def run(self):
         while not self.solver.is_done():
-            guess = self.solver.get_next_guess()
-            self.print_guess(guess)
-            result = self.read_result()
-            if result.strip() == "reset":
+            variants = self.solver.get_next_guess()
+            self.print_variants(variants)
+
+            result = self.read_user_input()
+            if result == "reset":
                 words = load_words(self.lang, self.default_length)
                 self.solver.reset(words, self.default_length)
                 continue
+            elif result == "exit":
+                print("Good bye!")
+                break
+
             try:
                 self.solver.add_guess_result(result)
             except Exception as e:
                 print(f"Error: {e}")
+
+    def print_variants(self, variants: list[str]):
+        if variants:
+            print("Possible variants:")
+            print("\n".join(variants))
+            guess = variants[0]
+            self.print_guess(guess)
+        print(f"Total variants: {self.solver.total_variants()}")
 
     def print_guess(self, word: str | None):
         if word is None:
@@ -39,5 +52,5 @@ class App:
         else:
             print(f"Try '{word}'")
 
-    def read_result(self) -> str:
-        return input("> ").lower()
+    def read_user_input(self) -> str:
+        return input("> ").lower().strip()

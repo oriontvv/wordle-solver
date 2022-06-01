@@ -53,7 +53,7 @@ class Solver:
     def is_done(self) -> bool:
         return all(letter.is_done() for letter in self.letters)
 
-    def get_next_guess(self) -> str | None:
+    def get_next_guess(self) -> list[str]:
         self.step += 1
 
         pattern = self._get_pattern()
@@ -69,15 +69,10 @@ class Solver:
         for letter in self.letters:
             letter.filter(abc)
 
-        variants = self.find_most_frequent_variants()
-        print(f"Total: {len(self.possible_words)}")
+        return self.find_most_frequent_variants()
 
-        if variants:
-            print("Possible variants:")
-            print("\n".join(variants))
-            return variants[0]
-
-        return None
+    def total_variants(self) -> int:
+        return len(self.possible_words)
 
     def find_most_frequent_variants(self, count: int = 30) -> list[str]:
         def max_freq(word):
