@@ -7,12 +7,12 @@ from collections import Counter
 
 class Solver:
     def __init__(self, words: set[str], lenght: int) -> None:
-        self.possible_words: set[str] = []
+        self.possible_words: set[str] = set()
         self.lenght = lenght
         self.step = 0
-        self.variants = set()
-        self.neg_variants = set()
-        self.letters = []
+        self.variants: set[str] = set()
+        self.neg_variants: set[str] = set()
+        self.letters: list[Letter] = []
         self.reset(words)
 
     def reset(self, words: set[str]):
@@ -92,7 +92,7 @@ class Solver:
                     result += 3 * freq[ch]
             return -result
 
-        freq = Counter()
+        freq: dict[str, int] = Counter()
         for word in self.possible_words:
             for ch in word:
                 freq[ch] += 1
@@ -136,7 +136,7 @@ variants: {self.variants}
 
 
 class Letter:
-    def __init__(self, solver: Solver, abc: str[str]):
+    def __init__(self, solver: Solver, abc: set[str]):
         self.solver = solver
         self.unchecked = abc
         self.found: str | None = None
