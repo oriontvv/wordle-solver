@@ -39,10 +39,11 @@ class Solver:
             if ch.endswith("?"):
                 ch = ch[0]
                 self.variants.add(ch)
-                if ch in letter.unchecked:
-                    letter.unchecked.remove(ch)
+                letter.unchecked.discard(ch)
             elif ch.endswith("-"):
                 ch = ch[0]
+                if ch in self.variants:
+                    raise Exception(f"Invalid rule for char {ch}")
                 self.neg_variants.add(ch)
             else:
                 if len(ch) != 1:
