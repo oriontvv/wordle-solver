@@ -6,10 +6,9 @@ from collections import Counter
 
 
 class Solver:
-    def __init__(self, words: set[str], lenght: int) -> None:
+    def __init__(self, words: set[str], length: int) -> None:
         self.possible_words: set[str] = set()
-        self.lenght = lenght
-        self.step = 0
+        self.length = length
         self.variants: set[str] = set()
         self.neg_variants: set[str] = set()
         self.letters: list[Letter] = []
@@ -18,13 +17,12 @@ class Solver:
     def reset(self, words: set[str]):
         if not words:
             raise Exception("Empty dictionary")
-        self.step = 0
         self.variants = set()
         self.neg_variants = set()
         self.original_words = words
         self.possible_words = copy.deepcopy(words)
         abc = {letter for word in words for letter in word}
-        self.letters = [Letter(self, abc) for _ in range(self.lenght)]
+        self.letters = [Letter(self, abc) for _ in range(self.length)]
 
     def add_guess_result(self, guess: str):
         chars = guess.strip().split()
@@ -54,8 +52,6 @@ class Solver:
         return all(letter.is_done() for letter in self.letters)
 
     def get_next_guess(self) -> list[str]:
-        self.step += 1
-
         pattern = self._get_pattern()
 
         self.possible_words = set(
@@ -103,7 +99,7 @@ class Solver:
         return words[:count]
 
     def find_optimized_word(self, variants) -> list[str]:
-        solver = Solver(self.original_words, self.lenght)
+        solver = Solver(self.original_words, self.length)
         unchecked_letters = set()
         for variant in variants:
             for variant_letter, letter in zip(variant, self.letters):
@@ -119,7 +115,6 @@ class Solver:
     def __str__(self) -> str:
         delim = "=" * 20
         result = f"""{delim}
-{self.step}
 variants: {self.variants}
 """
         for letter in self.letters:
