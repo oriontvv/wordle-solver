@@ -7,4 +7,5 @@ authors = [
     { name = "Vasiliy Taranov", email = "taranov.vv@gmail.com" }
 ]
 dependencies = [
+    { pytest = "7.*" }
 ]
