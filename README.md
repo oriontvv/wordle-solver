@@ -1,17 +1,18 @@
 # wordle-solver
-A solver for wordle puzzle game
+[![CI](https://github.com/oriontvv/wordle-solver/workflows/Python%20package/badge.svg)](https://github.com/oriontvv/wordle-solver/actions)
+
+A simle [solver](https://github.com/oriontvv/wordle-solver) for [wordle](https://en.wikipedia.org/wiki/Wordle) puzzle game.
 
 
 Format:
 
 ```
 x  character solved
-*  any character
-x? character is in the word
+x+ character is in the word
 x- character is NOT in the word
 
 characters should be delimeted with space:
-a l- e * t?
+a i- e t+ r+
 ```
 
 Running:

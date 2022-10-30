@@ -4,26 +4,22 @@ from src.solver import Solver
 
 @pytest.fixture
 def solver() -> Solver:
-    words = ['aaaaa', 'aaaab', 'aaaac']
+    words = ["aaaaa", "aaaab", "aaaac"]
     return Solver(words=set(words), length=len(words[0]))
 
 
-def test_simplest_solver(solver):
-    solver.add_guess_result("a a a a a")
+@pytest.mark.parametrize(
+    "result,expected_variants",
+    [
+        ("a a a a a", ("aaaaa",)),
+        ("a a a a b-", ("aaaaa", "aaaac")),
+        ("a a a b? c-", ("aaaab",)),
+    ],
+)
+def test_solver(result, expected_variants, solver):
+    solver.add_guess_result(result)
     variants = solver.get_next_guess()
-    assert variants == ['aaaaa']
-
-
-def test_solver(solver):
-    solver.add_guess_result("a a a a b-")
-    variants = solver.get_next_guess()
-    assert set(variants) == set(('aaaaa', 'aaaac'))
-
-
-def test_solver(solver):
-    solver.add_guess_result("a a a b? c-")
-    variants = solver.get_next_guess()
-    assert variants == ['aaaab']
+    assert set(variants) == set(expected_variants)
 
 
 def test_too_long_guess(solver):

@@ -1,11 +1,107 @@
-[project]
+[tool.poetry]
 name = "wordle-solver"
 description = "script for solving wordle puzzle"
 version = "0.1.0"
-license = "LGPL"
 authors = [
-    { name = "Vasiliy Taranov", email = "taranov.vv@gmail.com" }
+    "Vassiliy Taranov <taranov.vv@gmail.com>",
 ]
-dependencies = [
-    { pytest = "7.*" }
+license = "LGPL"
+readme = "README.md"
+homepage = "https://github.com/oriontvv/wordle-solver"
+repository = "https://github.com/oriontvv/wordle-solver"
+documentation = "https://github.com/oriontvv/wordle-solver"
+keywords = [
+    "wordle",
+    "puzzle",
+    "solver",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Topic :: Games/Entertainment",
+    "Topic :: Games/Entertainment :: Puzzle Games",
+    "Topic :: Utilities",
+]
+packages = [
+    { include = "wordle-solver", from = "src" }
+]
+
+[tool.poetry.scripts]
+wordle-solver = "src.wordle-solver.__init__:main"
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+
+[tool.poetry.dev-dependencies]
+black = "^22.8.0"
+coveralls = { version = "^3.3.1", extras = [ "toml" ]}
+flake8 = "^5.0.4"
+isort = "^5.10.1"
+mypy = "^0.971"
+pytest = "^7.0.1"
+pytest-cov = "^4.0.0"
+pytest-deadfixtures = "^2.2.1"
+
+
+[build-system]
+requires = [
+    "poetry>=0.12",
+]
+build-backend = "poetry.masonry.api"
+
+[tool.flake8]
+ignore = [
+    "N801",
+    "N802",
+    "N803",
+    "E226",
+]
+max-complexity = 7
+
+[tool.pytest]
+addopts = "--ignore=py3 --ignore=build"
+
+
+[tool.black]
+line-length = 120
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+# make it compatible with black
+profile = "black"
+# Make sure this matches `*.py` in .editorconfig
+ensure_newline_before_comments = true
+include_trailing_comma = true
+use_parentheses = true
+
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
 ]
