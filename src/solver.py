@@ -9,20 +9,19 @@ class Solver:
     def __init__(self, words: set[str], length: int) -> None:
         self.possible_words: set[str] = set()
         self.length = length
-        self.variants: set[str] = set()
-        self.neg_variants: set[str] = set()
         self.letters: list[Letter] = []
         self.reset(words)
+        self.found_chars = set()  # letters that must be in the word, not in their places
 
     def reset(self, words: set[str]):
         if not words:
             raise Exception("Empty dictionary")
         self.variants = set()
-        self.neg_variants = set()
         self.original_words = words
         self.possible_words = copy.deepcopy(words)
         abc = {letter for word in words for letter in word}
         self.letters = [Letter(abc) for _ in range(self.length)]
+        self.found_chars = set()
 
     def add_guess_result(self, guess: str):
         chars = guess.strip().split()
@@ -34,12 +33,11 @@ class Solver:
                 continue
             if ch.endswith(("?", "+")):
                 ch = ch[0]
-                self.variants.add(ch)
+                self.found_chars.add(ch)
             elif ch.endswith("-"):
                 ch = ch[0]
-                if ch in self.variants:
-                    raise Exception(f"Invalid rule for char {ch}")
-                self.neg_variants.add(ch)
+                for let in self.letters:
+                    let.mark_checked(ch)
             else:
                 if len(ch) != 1:
                     raise Exception(f"Invalid format: {ch}, expected 1 char")
@@ -49,19 +47,13 @@ class Solver:
         return all(letter.is_done() for letter in self.letters)
 
     def get_next_guess(self) -> list[str]:
-        pattern = self._get_pattern()
+        pattern = self.get_pattern()
 
         self.possible_words = set(
             word
             for word in self.possible_words
-            if re.match(pattern, word)
-            and all(variant in word for variant in self.variants)
-            and not any(neg_variant in word for neg_variant in self.neg_variants)
+            if re.match(pattern, word) and all(variant in word for variant in self.found_chars)
         )
-        abc = {letter for word in self.possible_words for letter in word}
-        for letter in self.letters:
-            letter.filter(abc)
-
         variants = self.find_most_frequent_variants()
         total_found = len([letter for letter in self.letters if letter.is_done()])
         if total_found >= 3 and len(self.possible_words) > 2:
@@ -103,7 +95,7 @@ class Solver:
                 unchecked_letters.add(variant_letter)
 
         optimized_variants = solver.find_most_frequent_variants(count=1, additional_weight=unchecked_letters)
-        return optimized_variants
+        return [optimized_variants[0] + "(*opt*)"]
 
     def __str__(self) -> str:
         delim = "=" * 20
@@ -114,14 +106,8 @@ variants: {self.variants}
             result += str(letter) + "\n"
         return result
 
-    def _get_pattern(self) -> str:
-        result = ""
-        for letter in self.letters:
-            if letter.found:
-                result += letter.found
-            else:
-                result += "(" + "|".join(letter.unchecked) + ")"
-        return result
+    def get_pattern(self) -> str:
+        return "".join(letter.get_pattern() for letter in self.letters)
 
 
 class Letter:
@@ -132,10 +118,13 @@ class Letter:
     def is_done(self) -> bool:
         return self.found is not None
 
-    def filter(self, new_available: set[str]):
-        if self.is_done():
-            return
-        self.unchecked = set(ch for ch in self.unchecked if ch in new_available)
+    def mark_checked(self, checked_char: str):
+        self.unchecked.discard(checked_char)
+
+    def get_pattern(self) -> str:
+        if self.found:
+            return self.found
+        return "(" + "|".join(self.unchecked) + ")"
 
     def __str__(self) -> str:
         if self.found:
