@@ -35,8 +35,7 @@ mypy:
 pytest-lint:
 	$(VENV)/bin/pytest --dead-fixtures --dup-fixtures $(CODE)
 
-pretty: black-format \
-	$(VENV)/bin/isort $(ALL)
+pretty: black-format
 
 plint: pretty lint
 
