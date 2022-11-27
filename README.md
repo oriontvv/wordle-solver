@@ -1,5 +1,5 @@
 # wordle-solver
-[![CI](https://github.com/oriontvv/wordle-solver/workflows/Python%20package/badge.svg)](https://github.com/oriontvv/wordle-solver/actions)
+[![CI](https://github.com/oriontvv/wordle-solver/workflows/ci/badge.svg)](https://github.com/oriontvv/wordle-solver/actions)
 
 A simle [solver](https://github.com/oriontvv/wordle-solver) for [wordle](https://en.wikipedia.org/wiki/Wordle) puzzle game.
 

@@ -50,11 +50,11 @@ class Solver:
     def get_next_guess(self) -> list[str]:
         pattern = self.get_pattern()
 
-        self.possible_words = set(
+        self.possible_words = {
             word
             for word in self.possible_words
             if re.match(pattern, word) and all(variant in word for variant in self.found_chars)
-        )
+        }
         variants = self.find_most_frequent_variants()
         total_found = len([letter for letter in self.letters if letter.is_done()])
         if total_found >= 3 and len(self.possible_words) > 2:

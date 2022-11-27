@@ -17,16 +17,10 @@ init:
 	$(VENV)/bin/python -m pip install poetry
 	$(VENV)/bin/poetry install
 
-lint: black-lint mypy pytest-lint
+lint: ruff mypy
 
-black-lint:
-	$(VENV)/bin/black --check $(CODE)
-
-black-format:
-	$(VENV)/bin/black $(CODE)
-
-flake8:
-	$(VENV)/bin/flake8 --statistics --jobs $(JOBS) --show-source $(ALL)
+ruff:
+	$(VENV)/bin/ruff .
 
 mypy:
 	MYPYPATH=src $(VENV)/bin/mypy --install-types --non-interactive \
@@ -35,7 +29,8 @@ mypy:
 pytest-lint:
 	$(VENV)/bin/pytest --dead-fixtures --dup-fixtures $(CODE)
 
-pretty: black-format
+pretty:
+	$(VENV)/bin/ruff --silent --exit-zero --fix .
 
 plint: pretty lint
 
