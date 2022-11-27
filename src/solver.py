@@ -4,6 +4,8 @@ import copy
 import re
 from collections import Counter
 
+from letter import Letter
+
 
 class Solver:
     def __init__(self, words: set[str], length: int) -> None:
@@ -15,7 +17,7 @@ class Solver:
 
     def reset(self, words: set[str]):
         if not words:
-            raise Exception("Empty dictionary")
+            raise ValueError("Empty dictionary")
         self.variants = set()
         self.original_words = words
         self.possible_words = copy.deepcopy(words)
@@ -26,7 +28,7 @@ class Solver:
     def add_guess_result(self, guess: str):
         chars = guess.strip().split()
         if len(chars) != len(self.letters):
-            raise Exception(f"Invalid format: {chars}, expected {len(self.letters)} chars")
+            raise ValueError(f"Invalid format: {chars}, expected {len(self.letters)} chars")
 
         for ch, letter in zip(chars, self.letters):
             if ch == "*":
@@ -40,7 +42,7 @@ class Solver:
                     let.mark_checked(ch)
             else:
                 if len(ch) != 1:
-                    raise Exception(f"Invalid format: {ch}, expected 1 char")
+                    raise ValueError(f"Invalid format: {ch}, expected 1 char")
                 letter.found = ch
 
     def is_done(self) -> bool:
@@ -71,7 +73,7 @@ class Solver:
             result = 0
             for ch in set(word):
                 if ch in additional_weight:
-                    result += 100 * freq[ch]
+                    result += 100 * freq[ch]  # make much more heavy
                 else:
                     result += 3 * freq[ch]
             return -result
@@ -86,6 +88,7 @@ class Solver:
         return words[:count]
 
     def find_optimized_word(self, variants: list[str]) -> list[str]:
+        # try to find a word that covers as many as possible words
         solver = Solver(self.original_words, self.length)
         unchecked_letters = set()
         for variant in variants:
@@ -108,25 +111,3 @@ variants: {self.variants}
 
     def get_pattern(self) -> str:
         return "".join(letter.get_pattern() for letter in self.letters)
-
-
-class Letter:
-    def __init__(self, abc: set[str]):
-        self.unchecked = abc
-        self.found: str | None = None
-
-    def is_done(self) -> bool:
-        return self.found is not None
-
-    def mark_checked(self, checked_char: str):
-        self.unchecked.discard(checked_char)
-
-    def get_pattern(self) -> str:
-        if self.found:
-            return self.found
-        return "(" + "|".join(self.unchecked) + ")"
-
-    def __str__(self) -> str:
-        if self.found:
-            return f"\t found: {self.found}\n"
-        return f"\t unchecked: {self.unchecked}\n"
