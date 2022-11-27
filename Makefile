@@ -29,7 +29,8 @@ flake8:
 	$(VENV)/bin/flake8 --statistics --jobs $(JOBS) --show-source $(ALL)
 
 mypy:
-	MYPYPATH=src $(VENV)/bin/mypy --install-types --non-interactive $(CODE)
+	MYPYPATH=src $(VENV)/bin/mypy --install-types --non-interactive \
+	--explicit-package-bases --namespace-packages $(CODE)
 
 pytest-lint:
 	$(VENV)/bin/pytest --dead-fixtures --dup-fixtures $(CODE)

@@ -1,6 +1,6 @@
 import pytest
-from src.solver import Solver
-from src.app import load_words
+from solver import Solver
+from app import load_words
 
 
 @pytest.fixture

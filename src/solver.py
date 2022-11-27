@@ -13,12 +13,11 @@ class Solver:
         self.length = length
         self.letters: list[Letter] = []
         self.reset(words)
-        self.found_chars = set()  # letters that must be in the word, not in their places
+        self.found_chars: set[str] = set()  # letters that must be in the word, not in their places
 
     def reset(self, words: set[str]):
         if not words:
             raise ValueError("Empty dictionary")
-        self.variants = set()
         self.original_words = words
         self.possible_words = copy.deepcopy(words)
         abc = {letter for word in words for letter in word}
@@ -103,7 +102,7 @@ class Solver:
     def __str__(self) -> str:
         delim = "=" * 20
         result = f"""{delim}
-variants: {self.variants}
+found letters: {self.found_chars}
 """
         for letter in self.letters:
             result += str(letter) + "\n"
