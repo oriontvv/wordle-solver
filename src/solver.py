@@ -65,7 +65,7 @@ class Solver:
     def total_variants(self) -> int:
         return len(self.possible_words)
 
-    def find_most_frequent_variants(self, count: int = 30, additional_weight: set = None) -> list[str]:
+    def find_most_frequent_variants(self, count: int = 30, additional_weight: set | None = None) -> list[str]:
         additional_weight = additional_weight or set()
 
         def max_freq(word):
