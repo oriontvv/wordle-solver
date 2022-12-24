@@ -13,7 +13,9 @@ class Solver:
         self.length = length
         self.letters: list[Letter] = []
         self.reset(words)
-        self.found_chars: set[str] = set()  # letters that must be in the word, not in their places
+        self.found_chars: set[
+            str
+        ] = set()  # letters that must be in the word, not in their places
 
     def reset(self, words: set[str]):
         if not words:
@@ -21,13 +23,15 @@ class Solver:
         self.original_words = words
         self.possible_words = copy.deepcopy(words)
         abc = {letter for word in words for letter in word}
-        self.letters = [Letter(abc) for _ in range(self.length)]
+        self.letters = [Letter(index, abc) for index in range(self.length)]
         self.found_chars = set()
 
     def add_guess_result(self, guess: str):
         chars = guess.strip().split()
         if len(chars) != len(self.letters):
-            raise ValueError(f"Invalid format: {chars}, expected {len(self.letters)} chars")
+            raise ValueError(
+                f"Invalid format: {chars}, expected {len(self.letters)} chars"
+            )
 
         for ch, letter in zip(chars, self.letters):
             if ch == "*":
@@ -35,6 +39,7 @@ class Solver:
             if ch.endswith(("?", "+")):
                 ch = ch[0]
                 self.found_chars.add(ch)
+                letter.mark_checked(ch)
             elif ch.endswith("-"):
                 ch = ch[0]
                 for let in self.letters:
@@ -53,7 +58,8 @@ class Solver:
         self.possible_words = {
             word
             for word in self.possible_words
-            if re.match(pattern, word) and all(variant in word for variant in self.found_chars)
+            if re.match(pattern, word)
+            and all(variant in word for variant in self.found_chars)
         }
         variants = self.find_most_frequent_variants()
         total_found = len([letter for letter in self.letters if letter.is_done()])
@@ -65,7 +71,9 @@ class Solver:
     def total_variants(self) -> int:
         return len(self.possible_words)
 
-    def find_most_frequent_variants(self, count: int = 30, additional_weight: set | None = None) -> list[str]:
+    def find_most_frequent_variants(
+        self, count: int = 30, additional_weight: set | None = None
+    ) -> list[str]:
         additional_weight = additional_weight or set()
 
         def max_freq(word):
@@ -96,7 +104,9 @@ class Solver:
                     continue
                 unchecked_letters.add(variant_letter)
 
-        optimized_variants = solver.find_most_frequent_variants(count=1, additional_weight=unchecked_letters)
+        optimized_variants = solver.find_most_frequent_variants(
+            count=1, additional_weight=unchecked_letters
+        )
         return [optimized_variants[0] + "(*opt*)"]
 
     def __str__(self) -> str:

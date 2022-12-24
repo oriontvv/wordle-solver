@@ -6,7 +6,7 @@ from solver import Solver
 @pytest.fixture
 def solver() -> Solver:
     words = ["aaaaa", "aaaab", "aaaac"]
-    return Solver(words=set(words), length=len(words[0]))
+    return Solver(words=set(words), length=5)
 
 
 @pytest.fixture
@@ -45,10 +45,25 @@ def test_guess_without_spaces(solver):
 
 
 def test_real_guesses(ru_solver):
-    assert ru_solver.get_next_guess()[0] == "кроат", ru_solver.get_next_guess()
+    guess = ru_solver.get_next_guess()
+    assert guess and guess[0] == "кроат", guess
+
     ru_solver.add_guess_result("к- р- о- а+ т")
-    assert ru_solver.get_next_guess()[0] == "налет", ru_solver.get_next_guess()
+    guess = ru_solver.get_next_guess()
+    assert guess and guess[0] == "налет", guess
+
     ru_solver.add_guess_result("н- а л е- т")
-    assert ru_solver.get_next_guess()[0] == "сноха(*opt*)", ru_solver.get_next_guess()
+    guess = ru_solver.get_next_guess()
+    assert guess and guess[0] == "салют", guess
+
     ru_solver.add_guess_result("с- н- о- х+ а+")
-    assert ru_solver.get_next_guess()[0] == "халат", ru_solver.get_next_guess()
+    guess = ru_solver.get_next_guess()
+    assert not guess
+
+
+def test_real_guesses_1(ru_solver):
+    assert ru_solver.get_next_guess()[0] == "кроат", ru_solver.get_next_guess()
+    ru_solver.add_guess_result("к- р+ о а- т+")
+    guess = ru_solver.get_next_guess()
+    assert "шторм" in guess, guess
+    assert "фронт" not in guess, guess

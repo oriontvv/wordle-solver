@@ -1,9 +1,11 @@
 from __future__ import annotations
+import copy
 
 
 class Letter:
-    def __init__(self, abc: set[str]):
-        self.unchecked = abc
+    def __init__(self, index, abc: set[str]):
+        self.index = index
+        self.unchecked = copy.copy(abc)
         self.found: str | None = None
 
     def is_done(self) -> bool:
@@ -19,5 +21,5 @@ class Letter:
 
     def __str__(self) -> str:
         if self.found:
-            return f"\t found: {self.found}\n"
-        return f"\t unchecked: {self.unchecked}\n"
+            return f"\t (#{self.index}) found: {self.found}\n"
+        return f"\t (#{self.index}) unchecked: {sorted(self.unchecked)}\n"

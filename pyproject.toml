@@ -46,6 +46,7 @@ pytest-deadfixtures = "^2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.141"
+black = {version = "^23.1a1", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry>=0.12"]
@@ -54,8 +55,8 @@ build-backend = "poetry.masonry.api"
 
 [tool.ruff]
 line-length = 120
-ignore = ["T201"]
-select = ["A", "B", "C", "E", "F", "N", "T", "U", "I"]
+ignore = ["T201", "I001", "B905"]
+select = ["A", "B", "C", "E", "F", "N", "T", "UP", "I"]
 target-version = "py310"
 
 [tool.ruff.mccabe]
