@@ -27,7 +27,7 @@ class App:
             self.print_variants(variants)
 
             result = self.read_user_input()
-            if result == "reset":
+            if result == "new":
                 words = load_words(self.lang, self.default_length)
                 self.solver.reset(words)
                 continue

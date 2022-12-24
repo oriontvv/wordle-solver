@@ -10,7 +10,7 @@ Format:
 x     character solved
 x+    character is in the word
 x-    character is NOT in the word
-reset command will reset the state of the solver
+new   start new game
 exit  close program
 
 characters should be delimeted with space:

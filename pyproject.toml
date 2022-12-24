@@ -36,7 +36,7 @@ wordle_solver = "src.wordle-solver.__init__:main"
 python = ">=3.7"
 
 [tool.poetry.dev-dependencies]
-ruff = "^0.0.141"
+ruff = "^0.0.192"
 coveralls = { version = "^3.3.1", extras = [ "toml" ]}
 mypy = "^0.991"
 pytest = "^7.0.1"
