@@ -34,8 +34,6 @@ class Solver:
             )
 
         for ch, letter in zip(chars, self.letters):
-            if ch == "*":
-                continue
             if ch.endswith(("?", "+")):
                 ch = ch[0]
                 self.found_chars.add(ch)
@@ -110,10 +108,7 @@ class Solver:
         return [optimized_variants[0] + "(*opt*)"]
 
     def __str__(self) -> str:
-        delim = "=" * 20
-        result = f"""{delim}
-found letters: {self.found_chars}
-"""
+        result = f"found letters: {self.found_chars}\n"
         for letter in self.letters:
             result += str(letter) + "\n"
         return result
