@@ -72,6 +72,10 @@ addopts = "--ignore=py3 --ignore=build"
 
 [tool.coverage.run]
 relative_files = true
+omit = [
+    "src/app.py",
+    "src/cli.py",
+]
 
 
 [tool.coverage.report]
