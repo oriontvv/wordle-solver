@@ -21,5 +21,5 @@ class Letter:
 
     def __str__(self) -> str:
         if self.found:
-            return f"\t (#{self.index}) found: {self.found}\n"
-        return f"\t (#{self.index}) unchecked: {sorted(self.unchecked)}\n"
+            return f"(#{self.index}) found: {self.found}"
+        return f"(#{self.index}) unchecked: {sorted(self.unchecked)}"
