@@ -113,7 +113,7 @@ def test_solver_display(solver):
 
 def test_error_when_empty_dict():
     with pytest.raises(ValueError):
-        solver = Solver(words=set(), length=5)
+        Solver(words=set(), length=5)
 
 
 def test_solver_methods(solver: Solver):
