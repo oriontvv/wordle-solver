@@ -1,20 +1,10 @@
 from __future__ import annotations
 
 from solver import Solver
+from words import load_words
 
 
-def load_words(lang: str, length: int) -> set[str]:
-    words = set()
-    with open(f"words/{lang}.txt") as f:
-        for line in f:
-            word = line.strip()
-            if len(word) != length:
-                continue
-            words.add(word.lower())
-    return words
-
-
-class App:
+class CliApp:
     def __init__(self, lang: str, length: int):
         self.lang = lang
         self.default_length = length

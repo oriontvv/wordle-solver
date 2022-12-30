@@ -29,11 +29,10 @@ packages = [
     { include = "src" }
 ]
 
-[tool.poetry.scripts]
-wordle_solver = "src.wordle-solver.__init__:main"
-
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7,<4.0"
+python-telegram-bot = "13"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
 coveralls = { version = "^3.3.1", extras = [ "toml" ]}
@@ -65,6 +64,8 @@ max-complexity = 10
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
 
+[tool.mypy]
+ignore_missing_imports = true
 
 [tool.pytest]
 addopts = "--ignore=py3 --ignore=build"
@@ -73,8 +74,8 @@ addopts = "--ignore=py3 --ignore=build"
 [tool.coverage.run]
 relative_files = true
 omit = [
-    "src/app.py",
-    "src/cli.py",
+    "src/bot.py",
+    "src/cli_app.py",
 ]
 
 

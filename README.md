@@ -5,7 +5,7 @@
 A simple [solver](https://github.com/oriontvv/wordle-solver) for [wordle](https://en.wikipedia.org/wiki/Wordle) puzzle game.
 
 
-Format:
+## Format:
 
 ```
 x     character solved
@@ -18,10 +18,24 @@ characters should be delimeted with space:
 a i- e t+ r+
 ```
 
-Running:
+## Install:
 
 ```bash
 $ git clone https://github.com/oriontvv/wordle-solver
 $ cd wordle-solver
-$ python src/cli.py --lang ru
+$ python -m pip install -U poetry setuptools && poetry install
+```
+
+## Running
+### telegram [bot](https://t.me/WordleGameSolverBot)
+
+```bash
+$ echo "TELEGRAM_TOKEN=### YOUR_TOKEN_HERE ###" > .env
+$ python src/main.py --lang ru --bot
+```
+
+### cli repl
+
+```bash
+$ python src/main.py --lang en
 ```

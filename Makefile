@@ -71,3 +71,6 @@ doc:
 
 doc-spelling:
 	make -C docs spelling
+
+develop-bot:
+	watchexec -rc -e py -- poetry run python src/main.py --bot
