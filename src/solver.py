@@ -27,7 +27,7 @@ class Solver:
         self.found_chars = set()
 
     def add_guess_result(self, guess: str):
-        chars = guess.strip().split()
+        chars = guess.strip().lower().split()
         if len(chars) != len(self.letters):
             raise ValueError(
                 f"Invalid format: {chars}, expected {len(self.letters)} chars"
@@ -61,7 +61,7 @@ class Solver:
         }
         variants = self.find_most_frequent_variants()
         total_found = len([letter for letter in self.letters if letter.is_done()])
-        if total_found >= 3 and len(self.possible_words) > 2:
+        if total_found >= 2 and len(self.possible_words) > 2:
             variants = self.find_optimized_word(variants) + variants
 
         return variants
