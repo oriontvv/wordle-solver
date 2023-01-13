@@ -1,5 +1,5 @@
 import pytest
-from words import load_words
+from words_loader import load_words
 from solver import Solver
 
 

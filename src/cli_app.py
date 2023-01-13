@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from solver import Solver
-from words import load_words
+from words_loader import load_words
 
 
 class CliApp:

@@ -72,12 +72,12 @@ class Solver:
     def find_most_frequent_variants(
         self, count: int = 30, additional_weight: set | None = None
     ) -> list[str]:
-        additional_weight = additional_weight or set()
+        _additional_weight = additional_weight or set()
 
         def max_freq(word):
             result = 0
             for ch in set(word):
-                if ch in additional_weight:
+                if ch in _additional_weight:
                     result += 100 * freq[ch]  # make much more heavy
                 else:
                     result += 3 * freq[ch]

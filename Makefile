@@ -23,8 +23,8 @@ ruff:
 	$(VENV)/bin/ruff .
 
 mypy:
-	MYPYPATH=src $(VENV)/bin/mypy --install-types --non-interactive \
-	--explicit-package-bases --namespace-packages $(CODE)
+	$(VENV)/bin/mypy --install-types --non-interactive \
+	--explicit-package-bases --namespace-packages --check-untyped-defs $(CODE)
 
 pytest-lint:
 	$(VENV)/bin/pytest --dead-fixtures --dup-fixtures $(CODE)

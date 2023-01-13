@@ -16,7 +16,7 @@ from telegram.ext import (
     CallbackContext,
 )
 
-from words import load_words
+from words_loader import load_words
 from solver import Solver
 
 cur_dir = Path(__file__).parent
