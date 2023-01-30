@@ -62,7 +62,9 @@ class Solver:
         variants = self.find_most_frequent_variants()
         total_found = len([letter for letter in self.letters if letter.is_done()])
         if total_found >= 2 and len(self.possible_words) > 2:
-            variants = self.find_optimized_word(variants) + variants
+            optimized_word = self.find_optimized_word(variants)
+            if optimized_word not in variants:
+                variants = [(optimized_word + "(*opt*)")] + variants
 
         return variants
 
@@ -92,7 +94,7 @@ class Solver:
         words.sort(key=max_freq)
         return words[:count]
 
-    def find_optimized_word(self, variants: list[str]) -> list[str]:
+    def find_optimized_word(self, variants: list[str]) -> str:
         # try to find a word that covers as many as possible words
         solver = Solver(self.original_words, self.length)
         unchecked_letters = set()
@@ -105,7 +107,7 @@ class Solver:
         optimized_variants = solver.find_most_frequent_variants(
             count=1, additional_weight=unchecked_letters
         )
-        return [optimized_variants[0] + "(*opt*)"]
+        return optimized_variants[0]
 
     def __str__(self) -> str:
         result = f"found letters: {self.found_chars}\n"
