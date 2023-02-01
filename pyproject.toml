@@ -32,12 +32,12 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 python-telegram-bot = "13.0,<20.0"
-python-dotenv = "^0.21.0"
+python-dotenv = "^0.21"
 
 [tool.poetry.dev-dependencies]
 coveralls = { version = "^3.3.1", extras = [ "toml" ]}
 mypy = "^0.991"
-pytest = "^7.0.1"
+pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 pytest-deadfixtures = "^2.2.1"
 
