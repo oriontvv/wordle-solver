@@ -31,7 +31,7 @@ file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(logging.Formatter(log_format))
 logger.addHandler(file_handler)
 
-sessions: dict[str, "Session"]
+sessions: dict[str, Session]
 HELP = """Wordle solver:
 /new <lang> \t\t start new game
 
