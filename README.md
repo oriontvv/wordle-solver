@@ -1,6 +1,6 @@
 # wordle-solver
 [![CI](https://github.com/oriontvv/wordle-solver/workflows/ci/badge.svg)](https://github.com/oriontvv/wordle-solver/actions)
-[![Coverage badge](https://raw.githubusercontent.com/oriontvv/wordle-solver/python-coverage-comment-action-data/badge.svg)](https://github.com/oriontvv/wordle-solver/actions/workflows/python-package.yml)
+[![Coverage badge](https://raw.githubusercontent.com/oriontvv/wordle-solver/python-coverage-comment-action-data/badge.svg)](https://htmlpreview.github.io/?https://github.com/oriontvv/wordle-solver/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
 A simple [solver](https://github.com/oriontvv/wordle-solver) for [wordle](https://en.wikipedia.org/wiki/Wordle) puzzle game.
 
