@@ -51,23 +51,19 @@ def test_guess_extra_letter(solver):
 
 def test_real_guesses(ru_solver):
     guess = ru_solver.get_next_guess()
-    assert guess and guess[0] == "кроат", guess
+    assert guess and guess[0] == "порка", guess
 
-    ru_solver.add_guess_result("к- р- о- а+ т")
+    ru_solver.add_guess_result("п- о- р- к- а+")
     guess = ru_solver.get_next_guess()
     assert guess and guess[0] == "налет", guess
 
-    ru_solver.add_guess_result("н- а л е- т")
+    ru_solver.add_guess_result("н а л е т")
     guess = ru_solver.get_next_guess()
-    assert guess and guess[0] == "салют", guess
-
-    ru_solver.add_guess_result("с- н- о- х+ а+")
-    guess = ru_solver.get_next_guess()
-    assert not guess
+    assert guess and guess[0] == "налет", guess
 
 
 def test_real_guesses_1(ru_solver):
-    assert ru_solver.get_next_guess()[0] == "кроат", ru_solver.get_next_guess()
+    assert ru_solver.get_next_guess()[0] == "порка", ru_solver.get_next_guess()
     ru_solver.add_guess_result("к- р+ о а- т+")
     guess = ru_solver.get_next_guess()
     assert "шторм" in guess, guess
@@ -76,12 +72,19 @@ def test_real_guesses_1(ru_solver):
 
 def test_opt_guess(ru_solver):
     guess = ru_solver.get_next_guess()
-    assert guess and guess[0] == "кроат", guess
+    assert guess and guess[0] == "порка", guess
 
-    ru_solver.add_guess_result("к+ р+ о+ а+ т-")
-    ru_solver.add_guess_result("п- о р к а")
+    ru_solver.add_guess_result("п- о- р- к- а+")
     guess = ru_solver.get_next_guess()
-    assert guess and guess[0] == "гранд(*opt*)", guess
+    assert guess and guess[0] == "налет", guess
+
+    ru_solver.add_guess_result("н- а л е- т")
+    guess = ru_solver.get_next_guess()
+    assert guess and guess[0] == "сюита(*opt*)", guess
+
+    ru_solver.add_guess_result("с- ю- и- т- а-")
+    guess = ru_solver.get_next_guess()
+    assert not guess
 
 
 def test_solver_display(solver):

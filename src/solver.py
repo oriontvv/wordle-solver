@@ -78,17 +78,21 @@ class Solver:
 
         def max_freq(word):
             result = 0
-            for ch in set(word):
+            checked = set()
+            for index, ch in enumerate(word):
+                if ch in checked:
+                    continue
+                checked.add(ch)
                 if ch in _additional_weight:
-                    result += 100 * freq[ch]  # make much more heavy
+                    result += 100 * freqs[index][ch]  # make much more heavy
                 else:
-                    result += 3 * freq[ch]
+                    result += 3 * freqs[index][ch]
             return -result
 
-        freq: dict[str, int] = Counter()
+        freqs: list[dict[str, int]] = [Counter() for _ in range(self.length)]
         for word in self.possible_words:
-            for ch in word:
-                freq[ch] += 1
+            for index, ch in enumerate(word):
+                freqs[index][ch] += 1
 
         words = list(self.possible_words)
         words.sort(key=max_freq)
