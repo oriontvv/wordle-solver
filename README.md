@@ -7,9 +7,9 @@
 | src/\_\_init\_\_.py  |        0 |        0 |    100% |           |
 | src/letter.py        |       19 |        0 |    100% |           |
 | src/main.py          |       16 |       16 |      0% |      1-25 |
-| src/solver.py        |       83 |        0 |    100% |           |
+| src/solver.py        |       87 |        0 |    100% |           |
 | src/words\_loader.py |       10 |        1 |     90% |        10 |
-|            **TOTAL** |  **128** |   **17** | **87%** |           |
+|            **TOTAL** |  **132** |   **17** | **87%** |           |
 
 
 ## Setup coverage badge
