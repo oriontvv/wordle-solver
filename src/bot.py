@@ -4,7 +4,7 @@ from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-from collections import defaultdict
+from expiring_dict import ExpiringDict
 
 from dotenv import load_dotenv
 from telegram import Update
@@ -25,13 +25,13 @@ logging.basicConfig(format=log_format, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 file_handler = RotatingFileHandler(
-    cur_dir / "history.log", maxBytes=10**6, backupCount=5
+    cur_dir.parent / "history.log", maxBytes=10**6, backupCount=5
 )
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(logging.Formatter(log_format))
 logger.addHandler(file_handler)
 
-sessions: dict[str, Session]
+sessions: ExpiredSessionsStorage
 HELP = """Wordle solver:
 /new <lang> \t\t start new game
 
@@ -40,6 +40,29 @@ x+ \t\t\t character is in the word
 x- \t\t\t character is NOT in the word
 characters should be delimeted with space:
 a i- e t+ r+"""
+
+
+class ExpiredSessionsStorage:
+    def __init__(
+        self,
+        lang: str,
+        length: int,
+        expire_session_ttl: int,
+        expire_session_interval: int,
+    ):
+        self.lang = lang
+        self.length = length
+        self.sessions = ExpiringDict(
+            ttl=expire_session_ttl, interval=expire_session_interval
+        )
+
+    def __getitem__(self, key: str) -> Session:
+        try:
+            return self.sessions[key]
+        except KeyError:
+            session = Session(self.lang, self.length)
+            self.sessions[key] = session
+            return session
 
 
 class Session:
@@ -52,7 +75,7 @@ class Session:
     def send_variants(self, update: Update) -> bool:
         if self.solver.is_done():
             update.message.reply_text(
-                "game is completed? select new <lang> for new game"
+                "Is game completed? type `new <lang>` for new game"
             )
             return False
         output = ""
@@ -116,13 +139,18 @@ def new_command(update: Update, context: CallbackContext) -> None:
 
 
 def run_bot(lang: str, length: int):
-    global sessions
-    sessions = defaultdict(lambda: Session(lang=lang, length=length))
-
     load_dotenv()
-    token = os.getenv("TELEGRAM_TOKEN")
-    assert token, "token not found"
-    updater = Updater(token=token, use_context=True)
+    tg_token = os.getenv("TELEGRAM_TOKEN")
+    expire_session_ttl = int(os.getenv("EXPIRE_SESSION_TTL", 4 * 60 * 60))
+    expire_session_interval = int(os.getenv("EXPIRE_SESSION_INTERVAL", 10 * 60))
+
+    global sessions
+    sessions = ExpiredSessionsStorage(
+        lang, length, expire_session_ttl, expire_session_interval
+    )
+
+    assert tg_token, "TELEGRAM_TOKEN env var not found"
+    updater = Updater(token=tg_token, use_context=True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("help", help_command))
