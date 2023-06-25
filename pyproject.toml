@@ -75,6 +75,7 @@ addopts = "--ignore=py3 --ignore=build"
 [tool.coverage.run]
 relative_files = true
 omit = [
+    "src/main.py",
     "src/bot.py",
     "src/cli_app.py",
 ]

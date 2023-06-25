@@ -4,6 +4,7 @@ from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from time import time
 from expiring_dict import ExpiringDict
 
 from dotenv import load_dotenv
@@ -42,6 +43,16 @@ characters should be delimeted with space:
 a i- e t+ r+"""
 
 
+class RefreshExpiringDict(ExpiringDict):
+    def refresh_tll(self, key):
+        with self.__lock:
+            for timestamp, _key in self.__keys:
+                if key == _key:
+                    del self.__keys[(timestamp, _key)]
+                    break
+            self.__keys.add((time() + self.__ttl, key))
+
+
 class ExpiredSessionsStorage:
     def __init__(
         self,
@@ -58,7 +69,9 @@ class ExpiredSessionsStorage:
 
     def __getitem__(self, key: str) -> Session:
         try:
-            return self.sessions[key]
+            session = self.sessions[key]
+            session.refresh_tll(key)
+            return session
         except KeyError:
             session = Session(self.lang, self.length)
             self.sessions[key] = session

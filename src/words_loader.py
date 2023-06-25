@@ -7,6 +7,6 @@ def load_words(lang: str, length: int) -> set[str]:
         for line in f:
             word = line.strip()
             if len(word) != length:
-                continue
+                continue  # pragma: no cover
             words.add(word.lower())
     return words
