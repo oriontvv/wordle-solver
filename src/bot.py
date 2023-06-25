@@ -34,23 +34,25 @@ logger.addHandler(file_handler)
 
 sessions: ExpiredSessionsStorage
 HELP = """Wordle solver:
-/new <lang> \t\t start new game
+/new ru : start new game with russian dict
+/new en : start new game with english dict
 
-x  \t\t\t character solved
-x+ \t\t\t character is in the word
-x- \t\t\t character is NOT in the word
-characters should be delimeted with space:
-a i- e t+ r+"""
+FORMAT: characters must be delimeted with space:
+a i- e t+ r+
+x       : character solved
+x+      : character is in the word
+x-      : character is NOT in the word
+"""
 
 
 class RefreshExpiringDict(ExpiringDict):
-    def refresh_tll(self, key):
-        with self.__lock:
-            for timestamp, _key in self.__keys:
+    def refresh_tll(self, key: str) -> None:
+        with self._ExpiringDict__lock:
+            for ts, _key in self._ExpiringDict__keys:
                 if key == _key:
-                    del self.__keys[(timestamp, _key)]
+                    self._ExpiringDict__keys.discard((ts, key))
                     break
-            self.__keys.add((time() + self.__ttl, key))
+            self._ExpiringDict__keys.add((time() + self._ExpiringDict__ttl, key))
 
 
 class ExpiredSessionsStorage:
@@ -63,14 +65,14 @@ class ExpiredSessionsStorage:
     ):
         self.lang = lang
         self.length = length
-        self.sessions = ExpiringDict(
+        self.sessions = RefreshExpiringDict(
             ttl=expire_session_ttl, interval=expire_session_interval
         )
 
     def __getitem__(self, key: str) -> Session:
         try:
             session = self.sessions[key]
-            session.refresh_tll(key)
+            self.sessions.refresh_tll(key)
             return session
         except KeyError:
             session = Session(self.lang, self.length)
@@ -87,9 +89,8 @@ class Session:
 
     def send_variants(self, update: Update) -> bool:
         if self.solver.is_done():
-            update.message.reply_text(
-                "Is game completed? type `new <lang>` for new game"
-            )
+            text = "Is game completed? type `new <lang>` for new game"
+            send_text(text, update)
             return False
         output = ""
         variants = self.solver.get_next_guess()
@@ -102,7 +103,7 @@ class Session:
                 output += f"Try '{guess}'\n"
 
         output += f"Total variants: {self.solver.total_variants()}"
-        update.message.reply_text(output)
+        send_text(output, update)
         return True
 
     def process_input(self, text: str, update: Update):
@@ -110,7 +111,7 @@ class Session:
             self.solver.add_guess_result(text)
             self.send_variants(update)
         except Exception as e:
-            update.message.reply_text(f"Error: {e}")
+            send_error(e, update)
 
     def reset(self, lang: str | None, update: Update):
         words = load_words(lang or self.lang, self.length)
@@ -118,7 +119,7 @@ class Session:
         try:
             self.send_variants(update)
         except Exception as e:
-            update.message.reply_text(f"Error: {e}")
+            send_error(e, update)
 
 
 def guess_word_command(update: Update, context: CallbackContext) -> None:
@@ -129,13 +130,26 @@ def guess_word_command(update: Update, context: CallbackContext) -> None:
     try:
         session.process_input(in_msg, update)
     except Exception as e:
-        msg = f"Error {e}\n{HELP}"
-        logger.info(msg)
-        update.message.reply_text(msg[:512])
+        send_error(e, update)
+
+
+def send_error(e: Exception, update: Update) -> None:
+    text = f"Error {e}"
+    logger.info(text)
+    send_text(text, update)
+    send_help(update)
+
+
+def send_help(update: Update) -> None:
+    send_text(HELP, update)
+
+
+def send_text(text: str, update: Update) -> None:
+    update.message.reply_text(text[:512])
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(HELP)
+    send_help(update)
 
 
 def new_command(update: Update, context: CallbackContext) -> None:
