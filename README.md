@@ -2,14 +2,13 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/oriontvv/wordle-solver/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                 |    Stmts |     Miss |   Cover |   Missing |
-|--------------------- | -------: | -------: | ------: | --------: |
-| src/\_\_init\_\_.py  |        0 |        0 |    100% |           |
-| src/letter.py        |       19 |        0 |    100% |           |
-| src/main.py          |       16 |       16 |      0% |      1-25 |
-| src/solver.py        |       87 |        0 |    100% |           |
-| src/words\_loader.py |       10 |        1 |     90% |        10 |
-|            **TOTAL** |  **132** |   **17** | **87%** |           |
+| Name                 |    Stmts |     Miss |    Cover |   Missing |
+|--------------------- | -------: | -------: | -------: | --------: |
+| src/\_\_init\_\_.py  |        0 |        0 |     100% |           |
+| src/letter.py        |       19 |        0 |     100% |           |
+| src/solver.py        |       87 |        0 |     100% |           |
+| src/words\_loader.py |        9 |        0 |     100% |           |
+|            **TOTAL** |  **115** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
