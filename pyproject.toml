@@ -38,7 +38,7 @@ expiring-dict = "^1.1.0"
 [tool.poetry.dev-dependencies]
 coveralls = { version = "^3.3.1", extras = [ "toml" ]}
 mypy = "^1.4"
-pytest = "^7.3.1"
+pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 pytest-deadfixtures = "^2.2.1"
 
