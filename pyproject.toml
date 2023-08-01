@@ -45,7 +45,7 @@ pytest-deadfixtures = "^2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 black = {version = "^23.3", allow-prereleases = true}
-ruff = "^0.0.277"
+ruff = "^0.0.281"
 
 [build-system]
 requires = ["poetry>=0.12"]
