@@ -4,6 +4,12 @@
 
 A simple [solver](https://github.com/oriontvv/wordle-solver) for [wordle](https://en.wikipedia.org/wiki/Wordle) puzzle game.
 
+## Usage
+
+Format | Game
+---|---
+![a](/img/game.jpeg) | ![a](/img/bot.png) 
+---
 
 ## Format:
 
