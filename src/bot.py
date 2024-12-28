@@ -25,9 +25,7 @@ log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 logging.basicConfig(format=log_format, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-file_handler = RotatingFileHandler(
-    cur_dir.parent / "history.log", maxBytes=10**6, backupCount=5
-)
+file_handler = RotatingFileHandler(cur_dir.parent / "history.log", maxBytes=10**6, backupCount=5)
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(logging.Formatter(log_format))
 logger.addHandler(file_handler)
@@ -65,9 +63,7 @@ class ExpiredSessionsStorage:
     ):
         self.lang = lang
         self.length = length
-        self.sessions = RefreshExpiringDict(
-            ttl=expire_session_ttl, interval=expire_session_interval
-        )
+        self.sessions = RefreshExpiringDict(ttl=expire_session_ttl, interval=expire_session_interval)
 
     def __getitem__(self, key: str) -> Session:
         try:
@@ -172,9 +168,7 @@ def run_bot(lang: str, length: int):
     expire_session_interval = int(os.getenv("EXPIRE_SESSION_INTERVAL", 10 * 60))
 
     global sessions
-    sessions = ExpiredSessionsStorage(
-        lang, length, expire_session_ttl, expire_session_interval
-    )
+    sessions = ExpiredSessionsStorage(lang, length, expire_session_ttl, expire_session_interval)
 
     assert tg_token, "TELEGRAM_TOKEN env var not found"
     updater = Updater(token=tg_token, use_context=True)
@@ -182,9 +176,7 @@ def run_bot(lang: str, length: int):
 
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("new", new_command))
-    dispatcher.add_handler(
-        MessageHandler(Filters.text & ~Filters.command, guess_word_command)
-    )
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, guess_word_command))
 
     updater.start_polling()
     logger.info("started")
