@@ -6,7 +6,7 @@ A simple [solver](https://github.com/oriontvv/wordle-solver) for [wordle](https:
 
 ## Usage
 
-Format | Game
+Game | Format
 ---|---
 ![a](/img/game.jpeg) | ![a](/img/bot.png) 
 ---
@@ -25,11 +25,12 @@ a i- e t+ r+
 ```
 
 ## Install:
+install [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ```bash
 $ git clone https://github.com/oriontvv/wordle-solver
 $ cd wordle-solver
-$ python -m pip install -U poetry setuptools && poetry install
+$ uv sync
 ```
 
 ## Running
@@ -37,11 +38,11 @@ $ python -m pip install -U poetry setuptools && poetry install
 
 ```bash
 $ echo "TELEGRAM_TOKEN=### YOUR_TOKEN_HERE ###" > .env
-$ python src/main.py --lang ru --bot
+$ uv run src/main.py --lang ru --bot
 ```
 
 ### cli repl
 
 ```bash
-$ python src/main.py --lang en
+$ uv run src/main.py --lang en
 ```

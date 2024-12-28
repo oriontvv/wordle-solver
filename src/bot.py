@@ -6,16 +6,11 @@ from logging.handlers import RotatingFileHandler
 import os
 from time import time
 from expiring_dict import ExpiringDict
-
 from dotenv import load_dotenv
 from telegram import Update
-from telegram.ext import (
-    Updater,
-    CommandHandler,
-    MessageHandler,
-    Filters,
-    CallbackContext,
-)
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+import typing
+
 
 from words_loader import load_words
 from solver import Solver
@@ -83,10 +78,10 @@ class Session:
         words = load_words(lang, length)
         self.solver = Solver(words, length)
 
-    def send_variants(self, update: Update) -> bool:
+    async def send_variants(self, update: Update) -> bool:
         if self.solver.is_done():
             text = "Is game completed? type `new <lang>` for new game"
-            send_text(text, update)
+            await send_text(text, update)
             return False
         output = ""
         variants = self.solver.get_next_guess()
@@ -99,56 +94,59 @@ class Session:
                 output += f"Try '{guess}'\n"
 
         output += f"Total variants: {self.solver.total_variants()}"
-        send_text(output, update)
+        await send_text(output, update)
         return True
 
-    def process_input(self, text: str, update: Update):
+    async def process_input(self, text: str, update: Update):
         try:
             self.solver.add_guess_result(text)
-            self.send_variants(update)
+            await self.send_variants(update)
         except Exception as e:
-            send_error(e, update)
+            await send_error(e, update)
 
-    def reset(self, lang: str | None, update: Update):
+    async def reset(self, lang: str | None, update: Update):
         words = load_words(lang or self.lang, self.length)
         self.solver.reset(words)
         try:
-            self.send_variants(update)
+            await self.send_variants(update)
         except Exception as e:
-            send_error(e, update)
+            await send_error(e, update)
 
 
-def guess_word_command(update: Update, context: CallbackContext) -> None:
+@typing.no_type_check
+async def guess_word_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     in_msg = update.message.text
     user = update.effective_user.username
     logger.info(f"{user} sent '{in_msg}'")
     session = sessions[user]
     try:
-        session.process_input(in_msg, update)
+        await session.process_input(in_msg, update)
     except Exception as e:
-        send_error(e, update)
+        await send_error(e, update)
 
 
-def send_error(e: Exception, update: Update) -> None:
+async def send_error(e: Exception, update: Update) -> None:
     text = f"Error {e}"
     logger.info(text)
-    send_text(text, update)
-    send_help(update)
+    await send_text(text, update)
+    await send_help(update)
 
 
-def send_help(update: Update) -> None:
-    send_text(HELP, update)
+async def send_help(update: Update) -> None:
+    await send_text(HELP, update)
 
 
-def send_text(text: str, update: Update) -> None:
-    update.message.reply_text(text[:512])
+@typing.no_type_check
+async def send_text(text: str, update: Update) -> None:
+    await update.message.reply_text(text[:512])
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    send_help(update)
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await send_help(update)
 
 
-def new_command(update: Update, context: CallbackContext) -> None:
+@typing.no_type_check
+async def new_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     cmd = update.message.text
     try:
         _, lang = cmd.split()
@@ -171,17 +169,12 @@ def run_bot(lang: str, length: int):
     sessions = ExpiredSessionsStorage(lang, length, expire_session_ttl, expire_session_interval)
 
     assert tg_token, "TELEGRAM_TOKEN env var not found"
-    updater = Updater(token=tg_token, use_context=True)
-    dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(CommandHandler("help", help_command))
-    dispatcher.add_handler(CommandHandler("new", new_command))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, guess_word_command))
+    application = Application.builder().token(tg_token).build()
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("new", new_command))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, guess_word_command))
 
-    updater.start_polling()
     logger.info("started")
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+    # Run the bot until the user presses Ctrl-C
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
