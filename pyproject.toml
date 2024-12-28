@@ -1,68 +1,49 @@
-[tool.poetry]
+[project]
 name = "wordle-solver"
-description = "script for solving wordle puzzle"
 version = "0.1.0"
+description = "script for solving wordle puzzle"
 authors = [
-    "Vassiliy Taranov <taranov.vv@gmail.com>",
+    { name = "oriontvv", email = "taranov.vv@gmail.com" }
 ]
-license = "LGPL"
+license = "LGPL-3.0+"
 readme = "README.md"
+requires-python = ">=3.12"
 homepage = "https://github.com/oriontvv/wordle-solver"
 repository = "https://github.com/oriontvv/wordle-solver"
 documentation = "https://github.com/oriontvv/wordle-solver"
-keywords = [
-    "wordle",
-    "puzzle",
-    "solver",
-]
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
-    "Operating System :: OS Independent",
-    "Intended Audience :: End Users/Desktop",
-    "Programming Language :: Python :: 3",
-    "Topic :: Games/Entertainment",
-    "Topic :: Games/Entertainment :: Puzzle Games",
-    "Topic :: Utilities",
-]
-packages = [
-    { include = "src" }
+dependencies = [
+    "expiring-dict>=1.1.1",
+    "python-dotenv>=1.0.1",
+    "python-telegram-bot==13.0",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.7,<4.0"
-python-telegram-bot = "13.0,<20.0"
-python-dotenv = "^0.21"
-expiring-dict = "^1.1.0"
-
-[tool.poetry.dev-dependencies]
-coveralls = { version = "^3.3.1", extras = [ "toml" ]}
-mypy = "^1.4"
-pytest = "^7.4.0"
-pytest-cov = "^4.1.0"
-pytest-deadfixtures = "^2.2.1"
-
-
-[tool.poetry.group.dev.dependencies]
-black = {version = "^23.3", allow-prereleases = true}
-ruff = "^0.0.281"
+[project.scripts]
+wordle-solver = "wordle_solver:main"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = [
+    "mypy>=1.14.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "pytest-deadfixtures>=2.2.1",
+    "ruff>=0.8.4",
+]
 
 [tool.ruff]
 line-length = 120
-ignore = ["T201", "I001", "B905"]
-select = ["A", "B", "C", "E", "F", "N", "T", "UP", "I"]
-target-version = "py310"
+target-version = "py311"
 
-[tool.ruff.mccabe]
-# Unlike Flake8, default to a complexity level of 10.
+[tool.ruff.lint]
+ignore = ["T201", "I001"]
+
+[tool.ruff.lint.mccabe]
 max-complexity = 10
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 
 [tool.mypy]
@@ -71,7 +52,6 @@ ignore_missing_imports = true
 [tool.pytest]
 addopts = "--ignore=py3 --ignore=build"
 
-
 [tool.coverage.run]
 relative_files = true
 omit = [
@@ -79,7 +59,6 @@ omit = [
     "src/bot.py",
     "src/cli_app.py",
 ]
-
 
 [tool.coverage.report]
 exclude_lines = [

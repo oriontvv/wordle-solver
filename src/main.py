@@ -10,9 +10,7 @@ def parse_args():
     parser = ArgumentParser()
     parser.add_argument("--lang", help="language", default="ru")
     parser.add_argument("--length", help="length of words", default=5)
-    parser.add_argument(
-        "--bot", help="run telegram bot", default=False, action="store_true"
-    )
+    parser.add_argument("--bot", help="run telegram bot", default=False, action="store_true")
     return parser.parse_args()
 
 
